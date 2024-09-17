@@ -1,0 +1,16 @@
+{{ define "sgSubnet" }}
+securityGroups:
+- filters:
+  - name: tag:Name
+    values:
+    - cluster-lqt7d-gtq5k-node
+- filters:
+  - name: tag:Name
+    values:
+    - cluster-lqt7d-gtq5k-lb
+subnet:
+  filters:
+  - name: tag:Name
+    values:
+    - cluster-lqt7d-gtq5k-subnet-private-us-east-2b
+{{ end }}

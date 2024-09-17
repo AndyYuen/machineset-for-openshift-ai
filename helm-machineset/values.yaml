@@ -1,0 +1,9 @@
+infrastructureId: cluster-lqt7d-gtq5k
+
+ami: ami-08bb6907b96d2a024
+
+region: us-east-2
+
+availabilityZone: us-east-2b
+
+instanceType: m5.12xlarge

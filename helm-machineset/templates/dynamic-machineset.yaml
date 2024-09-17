@@ -1,0 +1,50 @@
+apiVersion: machine.openshift.io/v1beta1
+kind: MachineSet
+metadata:
+  labels:
+    machine.openshift.io/cluster-api-cluster: {{ .Values.infrastructureId }}
+  name: {{ .Values.infrastructureId }}-my-ms 
+  namespace: openshift-machine-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      machine.openshift.io/cluster-api-cluster: {{ .Values.infrastructureId }}
+      machine.openshift.io/cluster-api-machineset: {{ .Values.infrastructureId }}-my-ms 
+  template:
+    metadata:
+      labels:
+        machine.openshift.io/cluster-api-cluster: {{ .Values.infrastructureId }}
+        machine.openshift.io/cluster-api-machine-role: worker
+        machine.openshift.io/cluster-api-machine-type: worker
+        machine.openshift.io/cluster-api-machineset: {{ .Values.infrastructureId }}-my-ms 
+    spec:
+      metadata:
+        labels:
+          node-role.kubernetes.io/role: "" 
+      providerSpec:
+        value:
+          ami:
+            id: {{ .Values.ami }}
+          apiVersion: awsproviderconfig.openshift.io/v1beta1
+          blockDevices:
+            - ebs:
+                iops: 0
+                volumeSize: 120
+                volumeType: gp2
+          credentialsSecret:
+            name: aws-cloud-credentials
+          deviceIndex: 0
+          iamInstanceProfile:
+            id: {{ .Values.infrastructureId }}-worker-profile 
+          instanceType: {{ .Values.instanceType }}
+          kind: AWSMachineProviderConfig
+          placement:
+            availabilityZone: {{ .Values.availabilityZone }}
+            region: {{ .Values.region }}
+          {{- include "sgSubnet" . | indent 10 -}}
+          tags:
+            - name: kubernetes.io/cluster/{{ .Values.infrastructureId }} 
+              value: owned
+          userDataSecret:
+            name: worker-user-data
